@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -6,13 +7,13 @@ namespace Lab2._10FirstTask
 {
     class Program
     {
-        static void MyMeth1()                   // метод1, що виконується як задача
+        static void MyMeth1()                             // метод1, що виконується як задача
         {
             Console.WriteLine("MyMeth1() is started.");
             for (int count = 0; count < 5; count++)
             {
-                Thread.Sleep(200 * 1);         // затримка на 200 мс, пропорційна ідентифікатору задачі
-                Console.WriteLine("In the method MyMeth1() counter = " + count);
+                Thread.Sleep((int)(200 * Task.CurrentId));  // затримка пропорційна ідентифікатору процесу
+                Console.WriteLine("In the method MyMeth1() counter = " + count + " Current ID = " + Task.CurrentId);
             }
             Console.WriteLine("MyMeth1() is done.");
         }
@@ -22,15 +23,15 @@ namespace Lab2._10FirstTask
             Console.WriteLine("MyMeth2() is started.");
             for (int count = 0; count < 5; count++)
             {
-                Thread.Sleep(200 * 2);         // затримка вдвічі більша, пропорційна ідентифікатору задачі
-                Console.WriteLine("In the method MyMeth2() counter = " + count);
+                Thread.Sleep((int)(200 * Task.CurrentId));  // затримка пропорційна ідентифікатору процесу
+                Console.WriteLine("In the method MyMeth2() counter = " + count + " Current ID = " + Task.CurrentId);
             }
             Console.WriteLine("MyMeth2() is done.");
         }
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Main Thread is starting.");
+            //Console.WriteLine(" Current ID = " + Task.CurrentId);
 
             Parallel.Invoke(MyMeth1, MyMeth2);  // виконуємо паралельно два іменованих методи
 

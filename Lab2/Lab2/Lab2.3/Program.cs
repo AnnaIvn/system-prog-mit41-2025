@@ -31,10 +31,12 @@ namespace Lab2._3SecondTask
             tsk1.Start();                    // запускаємо задач на виконання
             tsk2.Start();
 
-            Console.WriteLine("Id of task tsk1 = " + tsk1.Id);     // вивідимо ідентифікатори задач після їх створення
+            Console.WriteLine("Id of task tsk1 = " + tsk1.Id);     // виведимо ідентифікатори задач після їх створення
             Console.WriteLine("Id of task tsk2 = " + tsk2.Id);
 
-            Task.WaitAll(tsk1, tsk2);                              // очікуємо завершення обох задач
+            //tsk1.Wait();
+            //tsk2.Wait();
+            Task.WaitAll(tsk1, tsk2);                   // очікуємо завершення обох задач
 
             tsk1.Dispose();                             // викликаємо Dispose() для звільнення ресурсів після завершення задач
             tsk2.Dispose();
