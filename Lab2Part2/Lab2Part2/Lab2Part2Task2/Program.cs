@@ -7,8 +7,8 @@ namespace Lab2Part2Task2
     class Program
     {
         // Константи для визначення цільового числа та допустимого відхилення
-        private const double TARGET_VALUE = 10000.0;           // цільове значення, до якого намагаємось наблизити результат
-        private const double TOLERANCE = 0.01;                 // допустиме відхилення від цільового значення
+        private const double TARGET_VALUE = 1000.0;           // цільове значення, до якого намагаємось наблизити результат
+        private const double TOLERANCE = 0.1;                 // допустиме відхилення від цільового значення
 
         static void Main(string[] args)
         {
