@@ -38,11 +38,6 @@ namespace Lab4TaskAsyncApp
                     lblProgress.Text = "Task is finished.";
                 }
             }
-            catch (OperationCanceledException)                    // cancel exception catcher
-            {
-                lblProgress.Text = "Task was canceled.";
-                progressBar.Value = 0;
-            }
             finally
             {
                 btnStart.Enabled = true;
@@ -58,7 +53,9 @@ namespace Lab4TaskAsyncApp
                 {
                     if (cancellTocken.IsCancellationRequested)   // if cancel was called
                     {
-                        throw new OperationCanceledException();
+                        lblProgress.Text = "Task was canceled.";
+                        progressBar.Value = 0;
+                        return i;
                     }
                     ChangeProgressBar.Report(i);
                     Thread.Sleep(100);
