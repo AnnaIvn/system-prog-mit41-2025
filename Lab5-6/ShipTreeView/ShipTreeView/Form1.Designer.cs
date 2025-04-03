@@ -28,29 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            treeViewShips = new TreeView();
             SuspendLayout();
-            // 
-            // treeViewShips
-            // 
-            treeViewShips.Location = new Point(12, 12);
-            treeViewShips.Name = "treeViewShips";
-            treeViewShips.Size = new Size(335, 320);
-            treeViewShips.TabIndex = 0;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(486, 346);
-            Controls.Add(treeViewShips);
             Name = "Form1";
             Text = "Form1";
             ResumeLayout(false);
         }
 
         #endregion
-
-        private TreeView treeViewShips;
     }
 }

@@ -1,66 +1,74 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Windows.Forms;
+
 namespace ShipTreeView
 {
     public partial class Form1 : Form
     {
-        private Button buttonShowShip;
-        private Button buttonHideShip;
+        private readonly Button buttonShowShip;
+        private readonly Button buttonHideShip;
+        private readonly TreeView treeViewShips;
+
         public Form1()
         {
             InitializeComponent();
 
-            Button buttonShowShip = new Button   // adding a button to the form
+            treeViewShips = new TreeView
             {
-                Text = "Show Ship tree",
-                Location = new System.Drawing.Point(360, 12),
-                Size = new System.Drawing.Size(100, 30)
+                Location = new System.Drawing.Point(12, 12),
+                Size = new System.Drawing.Size(320, 300)
             };
-            buttonShowShip.Click += ButtonShowShip_Click;
-            Controls.Add(buttonShowShip);
+            Controls.Add(treeViewShips);
 
-
-            buttonHideShip = new Button        // adding button to hide TreeView
-            {
-                Text = "Hide Ship Tree",
-                Location = new System.Drawing.Point(360, 50),
-                Size = new System.Drawing.Size(100, 30)
-            };
-            buttonHideShip.Click += ButtonHideShip_Click;
-            Controls.Add(buttonHideShip);
+            buttonShowShip = CreateButton("Show Ship tree", new System.Drawing.Point(360, 12), ButtonShowShip_Click);
+            buttonHideShip = CreateButton("Hide Ship Tree", new System.Drawing.Point(360, 50), (s, e) => treeViewShips.Nodes.Clear());
         }
+
+        private Button CreateButton(string text, System.Drawing.Point location, EventHandler onClick)
+        {
+            var button = new Button
+            {
+                Text = text,
+                Location = location,
+                Size = new System.Drawing.Size(100, 30)
+            };
+            button.Click += onClick;
+            Controls.Add(button);
+            return button;
+        }
+
 
         private void ButtonShowShip_Click(object sender, EventArgs e)
         {
-            // creating a ship object
-            Ship myShip = new Ship("Black Pearl", 100, 30.5, new List<string> { "Jack Sparrow", "Will Turner" });
-
-            
-            DisplayShipProperties(myShip);     // display ship properties in TreeView
+            var myShip = new Ship("Black Pearl", 100, 30.5, new List<string> { "Jack Sparrow", "Will Turner" });
+            DisplayShipProperties(myShip);
         }
 
-        private void ButtonHideShip_Click(object sender, EventArgs e)
+        private void DisplayShipProperties(object obj)
         {
-            treeViewShips.Nodes.Clear(); // Clear TreeView
-        }
+            treeViewShips.Nodes.Clear();
+            Type type = obj.GetType();
+            var rootNode = new TreeNode($"Class: {type.Name}");
 
-        private void DisplayShipProperties(Ship ship)
-        {
-            treeViewShips.Nodes.Clear(); // clear previous data
+            //adding properties
+            rootNode.Nodes.Add(new TreeNode("Properties:", type.GetProperties()
+                .Select(prop => new TreeNode($"{prop.Name}: {FormatValue(prop.GetValue(obj))} ({prop.PropertyType.Name})"))
+                .ToArray()));
 
-            TreeNode rootNode = new TreeNode("Ship: " + ship.Name);
-
-            rootNode.Nodes.Add($"Name: {ship.Name} (string)");
-            rootNode.Nodes.Add($"Capacity: {ship.Capacity} (int)");
-            rootNode.Nodes.Add($"Speed: {ship.Speed} (double)");
-
-            TreeNode crewNode = new TreeNode("Crew Members (List<string>):");
-            foreach (var member in ship.CrewMembers)
-            {
-                crewNode.Nodes.Add(member);
-            }
-            rootNode.Nodes.Add(crewNode);
+            //+methods
+            rootNode.Nodes.Add(new TreeNode("Methods:", type.GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance)
+                .Select(method => new TreeNode($"{method.ReturnType.Name} {method.Name}({string.Join(", ", method.GetParameters().Select(p => $"{p.ParameterType.Name} {p.Name}"))})"))
+                .ToArray()));
 
             treeViewShips.Nodes.Add(rootNode);
             treeViewShips.ExpandAll();
         }
+
+        private string FormatValue(object value) =>
+            value is List<string> list ? $"[{string.Join(", ", list)}]" : value?.ToString() ?? "null";
     }
 }
+
